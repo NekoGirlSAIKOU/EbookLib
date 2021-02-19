@@ -76,8 +76,9 @@ open class EpubHtml constructor(
         return this
     }
 
-    fun linkCSS(CSSItem: EpubItem) {
+    fun linkCSS(CSSItem: EpubItem):EpubHtml {
         this.linkedCSS.add(CSSItem)
+        return this
     }
 
     fun unlinkCSS(CSSItem: EpubItem) {

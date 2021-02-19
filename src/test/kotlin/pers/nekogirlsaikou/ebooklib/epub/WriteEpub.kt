@@ -37,6 +37,8 @@ class WriteEpub {
 fun EpubBook.addTestItems (){
     val book = this
 
+    val css = book.addEpubCss("test_css","test_css.css")
+    css.css = "p {color:red}"
 
     book.addEpubHtml(title = "volume1", filePath = "volume1.xhtml")
         .setContent("<p>volume1 content</p>")
@@ -52,6 +54,7 @@ fun EpubBook.addTestItems (){
         .setContent("<p>chapter2 content</p>")
         .addToSpine(book.spine)
         .addToToc(book.toc[0].sub_catalog!!)
+        .linkCSS(css)
 
     book.addEpubHtml(title = "volume2", filePath = "volume2.xhtml")
         .setContent("<p>volume2 content</p>")

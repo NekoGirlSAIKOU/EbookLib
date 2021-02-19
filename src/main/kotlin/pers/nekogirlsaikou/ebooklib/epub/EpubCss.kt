@@ -1,7 +1,7 @@
 package pers.nekogirlsaikou.ebooklib.epub
 
-open class EpubCSS constructor(uid: String?, filePath: String, content: String) :
-    EpubItem(uid, filePath, "text/css", content.toByteArray()) {
+open class EpubCss constructor(uid: String?=null, filePath: String, content: String? = null) :
+    EpubItem(uid, filePath, "text/css", content?.toByteArray()) {
     var css: String?
         get() {
             return content?.decodeToString()

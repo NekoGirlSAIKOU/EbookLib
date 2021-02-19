@@ -157,6 +157,10 @@ open class EpubBook constructor(language: String? = null, identifier: String? = 
         ) as EpubHtml
     }
 
+    fun addEpubCss(uid: String?=null, filePath: String, content: String? = null):EpubCss{
+        return addItem(EpubCss(uid,filePath,content)) as EpubCss
+    }
+
     fun removeItem(item: EpubItem) {
         items.remove(item)
     }
@@ -176,6 +180,10 @@ open class EpubBook constructor(language: String? = null, identifier: String? = 
 
     fun findAllHTMLItem(): List<EpubHtml> {
         return items.filter { it is EpubHtml } as List<EpubHtml>
+    }
+
+    fun findAllCssItem(): List<EpubCss>{
+        return items.filter { it is EpubCss } as List<EpubCss>
     }
 
     fun setCover(coverImageItem: EpubItem, create_page: Boolean = false) {
