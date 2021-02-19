@@ -38,6 +38,24 @@ class EpubNcx:EpubItem("ncx","toc.ncx","application/x-dtbncx+xml") {
                 .appendElement("text")
                 .text(book.title?:"Untitled")
             //val navMap = ncx.appendElement("navMap")
+            fun generateNavMap(navMap:Element,toc:List<Catalog>,depth:Int,depthmeta:Element){
+                for (item in toc){
+                    val navPoint = navMap.appendElement("navPoint")
+                    navPoint.appendElement("navLabel")
+                        .appendElement("text")
+                        .text(item.title)
+                    if (item.path != null){
+                        navPoint.appendElement("content")
+                            .attr("src",item.path)
+                    }
+                    item.sub_catalog?.let {
+                        generateNavMap(navPoint,it,depth+1,depthmeta)
+                    }
+                    if (depthmeta.attr("content").toInt() < depth){
+                        depthmeta.attr("content",depth.toString())
+                    }
+                }
+            }
             generateNavMap(ncx.appendElement("navMap"),toc,1,depthMeta)
 
             doc.outputSettings().syntax(Document.OutputSettings.Syntax.xml)
@@ -45,25 +63,4 @@ class EpubNcx:EpubItem("ncx","toc.ncx","application/x-dtbncx+xml") {
             return doc.toString().encodeToByteArray()
         }
         set(value) {}
-
-    companion object{
-        private fun generateNavMap(navMap:Element,toc:List<Catalog>,depth:Int,depthmeta:Element){
-            for (item in toc){
-                val navPoint = navMap.appendElement("navPoint")
-                navPoint.appendElement("navLabel")
-                    .appendElement("text")
-                    .text(item.title)
-                if (item.path != null){
-                    navPoint.appendElement("content")
-                        .attr("src",item.path)
-                }
-                item.sub_catalog?.let {
-                    generateNavMap(navPoint,it,depth+1,depthmeta)
-                }
-                if (depthmeta.attr("content").toInt() < depth){
-                    depthmeta.attr("content",depth.toString())
-                }
-            }
-        }
-    }
 }

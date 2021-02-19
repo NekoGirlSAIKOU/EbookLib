@@ -35,11 +35,11 @@ open class EpubHtml constructor(
                 }
             }
 
-            for (item: EpubItem in this.linkedCSS) {
-                val link: Element = this.html.head().appendElement("link")
-                link.attr("href", item.filePath)
-                link.attr("type", item.mediaType)
-                link.attr("rel", "stylesheet")
+            this.linkedCSS.forEach { item ->
+                this.html.head().appendElement("link")
+                    .attr("href", item.filePath)
+                    .attr("type", item.mediaType)
+                    .attr("rel", "stylesheet")
             }
 
             if (this.title != null) {

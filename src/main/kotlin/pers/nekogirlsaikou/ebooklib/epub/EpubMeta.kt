@@ -13,10 +13,8 @@ data class EpubMeta(var namespace:String?,var name:String, var value:String?,var
         if (value != null){
             meta.text(value)
         }
-        if (others != null){
-            for (key:String in others!!.keys){
-                meta.attr(key, others!![key])
-            }
+        others?.keys?.forEach { key ->
+            meta.attr(key, others!![key])
         }
         return meta
     }
