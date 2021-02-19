@@ -39,7 +39,7 @@ tasks.jar{
             "Import-Package" to "org.jsoup"
         )
     }
-    from ("src/main") {
-        include("META-INF/LICENSE")
+    from (".") {
+        include("META-INF/")
     }
 }
