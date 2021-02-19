@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Name: pers/nekogirlsaikou/ebooklib
+Specification-Title: EbookLib
+Specification-Version: 0.1.0
+Specification-Vendor: nekogirlsaikou
+Implementation-Title: pers.nekogirlsaikou.ebooklib
+Implementation-Version: bulid1
+Implementation-Vendor: nekogirlsaikou

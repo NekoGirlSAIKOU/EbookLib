@@ -24,3 +24,22 @@ tasks.test {
 tasks.withType<KotlinCompile>() {
     kotlinOptions.jvmTarget = "1.8"
 }
+
+tasks.jar{
+    manifest{
+        attributes(
+            "Created-By" to "NekoGirlSAIKOU",
+            "Automatic-Module-Name" to "pers.nekogirlsaikou.ebooklib",
+            "Bundle-Description" to "ebooklib is a kotlin library to read and write epub files.",
+            "Bundle-Name" to "ebooklib",
+            "Bundle-SymbolicName" to "pers.nekogirlsaikou.ebooklib",
+            "Bundle-Vendor" to "NekoGirlSAIKOU",
+            "Bundle-Version" to archiveVersion,
+            "Export-Package" to "pers.nekogirlsaikou.ebooklib",
+            "Import-Package" to "org.jsoup"
+        )
+    }
+    from ("src/main") {
+        include("META-INF/LICENSE")
+    }
+}
