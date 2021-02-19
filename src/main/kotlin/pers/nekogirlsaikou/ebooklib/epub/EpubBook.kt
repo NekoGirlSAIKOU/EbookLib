@@ -85,32 +85,32 @@ open class EpubBook constructor(language: String? = null, identifier: String? = 
         metas.clear()
     }
 
-    fun setTitle(title: String):EpubBook{
+    fun setTitle(title: String): EpubBook {
         this.title = title
         return this
     }
 
-    fun setLanguage(language: String):EpubBook{
+    fun setLanguage(language: String): EpubBook {
         this.language = language
         return this
     }
 
-    fun setIdentifier(identifier:String):EpubBook{
+    fun setIdentifier(identifier: String): EpubBook {
         this.identifier = identifier
         return this
     }
 
-    fun addMetadata(namespace: String?, name: String, value: String?, others: MutableMap<String, String>?):EpubBook {
+    fun addMetadata(namespace: String?, name: String, value: String?, others: MutableMap<String, String>?): EpubBook {
         metas.add(EpubMeta(namespace, name, value, others))
         return this
     }
 
-    fun addMetadata(namespace: String?, name: String, value: String?):EpubBook {
+    fun addMetadata(namespace: String?, name: String, value: String?): EpubBook {
         metas.add(EpubMeta(namespace, name, value))
         return this
     }
 
-    fun addSubject(content: String):EpubBook {
+    fun addSubject(content: String): EpubBook {
         addMetadata("dc", "subject", content)
         return this
     }
@@ -132,14 +132,14 @@ open class EpubBook constructor(language: String? = null, identifier: String? = 
         return metas.filter { it.name == "creator" }
     }
 
-    fun addAuthor(authorName: String):EpubBook {
+    fun addAuthor(authorName: String): EpubBook {
         val others: MutableMap<String, String> = HashMap()
         others["opf:role"] = "aut"
         addMetadata("dc", "creator", authorName, others)
         return this
     }
 
-    fun addIllustrator(illustratorName: String):EpubBook {
+    fun addIllustrator(illustratorName: String): EpubBook {
         var others: MutableMap<String, String> = HashMap()
         others["id"] = "illustrator"
         addMetadata("dc", "contributor", illustratorName, others)
@@ -177,8 +177,8 @@ open class EpubBook constructor(language: String? = null, identifier: String? = 
         ) as EpubHtml
     }
 
-    fun addEpubCss(uid: String?=null, filePath: String, content: String? = null):EpubCss{
-        return addItem(EpubCss(uid,filePath,content)) as EpubCss
+    fun addEpubCss(uid: String? = null, filePath: String, content: String? = null): EpubCss {
+        return addItem(EpubCss(uid, filePath, content)) as EpubCss
     }
 
     fun removeItem(item: EpubItem) {
@@ -202,11 +202,11 @@ open class EpubBook constructor(language: String? = null, identifier: String? = 
         return items.filter { it is EpubHtml } as List<EpubHtml>
     }
 
-    fun findAllCssItem(): List<EpubCss>{
+    fun findAllCssItem(): List<EpubCss> {
         return items.filter { it is EpubCss } as List<EpubCss>
     }
 
-    open fun setCover(coverImageItem: EpubItem, create_page: Boolean = false):EpubBook {
+    open fun setCover(coverImageItem: EpubItem, create_page: Boolean = false): EpubBook {
         addItem(coverImageItem)
         val others: MutableMap<String, String> = HashMap()
         others["name"] = "cover"
@@ -220,13 +220,13 @@ open class EpubBook constructor(language: String? = null, identifier: String? = 
         return this
     }
 
-    open fun setCover(filePath: String?, content: ByteArray, create_page: Boolean = false):EpubBook {
+    open fun setCover(filePath: String?, content: ByteArray, create_page: Boolean = false): EpubBook {
         // Default file name is cover.jpg
         val coverImageItem = EpubImage("coverImage", filePath ?: "cover.jpg", null, content)
         return setCover(coverImageItem, create_page)
     }
 
-    open fun setCover(content: ByteArray, create_page: Boolean = false):EpubBook {
+    open fun setCover(content: ByteArray, create_page: Boolean = false): EpubBook {
         return setCover(null, content, create_page)
     }
 

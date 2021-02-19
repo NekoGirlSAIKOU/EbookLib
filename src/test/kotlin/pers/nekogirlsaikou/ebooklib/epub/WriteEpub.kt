@@ -34,10 +34,10 @@ class WriteEpub {
     }
 }
 
-fun EpubBook.addTestItems (){
+fun EpubBook.addTestItems() {
     val book = this
 
-    val css = book.addEpubCss("test_css","test_css.css")
+    val css = book.addEpubCss("test_css", "test_css.css")
     css.css = "p {color:red}"
 
     book.addEpubHtml(title = "volume1", filePath = "volume1.xhtml")
