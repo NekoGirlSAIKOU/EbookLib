@@ -17,8 +17,8 @@ open class EpubHtml constructor(
     open lateinit var html: Document
     open var language: String = "en"
     open var title: String? = null
-    private var linkedCSS: MutableList<EpubItem> = ArrayList()
-    override var content: ByteArray?
+    open internal var linkedCSS: MutableList<EpubItem> = ArrayList()
+    open override var content: ByteArray?
         get() {
             val html = this.html.getRootElement()
 
@@ -67,21 +67,21 @@ open class EpubHtml constructor(
 
     constructor(filePath: String) : this(null, filePath, null)
 
-    fun getContent(): String {
+    open fun getContent(): String {
         return this.html.html()
     }
 
-    fun setContent(content: String?): EpubHtml {
+    open fun setContent(content: String?): EpubHtml {
         this.html = Jsoup.parse(content ?: "")
         return this
     }
 
-    fun linkCSS(CSSItem: EpubItem):EpubHtml {
+    open fun linkCSS(CSSItem: EpubItem):EpubHtml {
         this.linkedCSS.add(CSSItem)
         return this
     }
 
-    fun unlinkCSS(CSSItem: EpubItem) {
+    open fun unlinkCSS(CSSItem: EpubItem) {
         this.linkedCSS.remove(CSSItem)
     }
 

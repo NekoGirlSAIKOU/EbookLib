@@ -3,10 +3,10 @@ package pers.nekogirlsaikou.ebooklib.epub
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 
-class EpubNcx : EpubItem("ncx", "toc.ncx", "application/x-dtbncx+xml") {
-    val toc: MutableList<Catalog>?
+open class EpubNcx : EpubItem("ncx", "toc.ncx", "application/x-dtbncx+xml") {
+    open val toc: MutableList<Catalog>?
         get() = book?.toc
-    override var content: ByteArray?
+    open override var content: ByteArray?
         get() {
             val book: EpubBook
             val toc: List<Catalog>

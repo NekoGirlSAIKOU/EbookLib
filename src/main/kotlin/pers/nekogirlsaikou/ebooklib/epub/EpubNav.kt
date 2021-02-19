@@ -4,22 +4,22 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 
-class EpubNav : EpubHtml("nav", "nav.xhtml", "application/xhtml+xml") {
-    val toc: MutableList<Catalog>?
+open class EpubNav : EpubHtml("nav", "nav.xhtml", "application/xhtml+xml") {
+    open val toc: MutableList<Catalog>?
         get() = book?.toc
-    override var language: String
+    open override var language: String
         get() {
             return this.book?.language ?: "en"
         }
         set(value) {}
-    override var title: String?
+    open override var title: String?
         get() {
             return super.title ?: this.book?.title
         }
         set(value) {
             super.title = value
         }
-    override var html: Document
+    open override var html: Document
         get() {
             val doc = Jsoup.parse("")
 
@@ -59,10 +59,4 @@ class EpubNav : EpubHtml("nav", "nav.xhtml", "application/xhtml+xml") {
         set(value) {
             // TODO: 2/19/21 parse nav
         }
-
-    init {
-        this.title = null
-    }
-
-
 }

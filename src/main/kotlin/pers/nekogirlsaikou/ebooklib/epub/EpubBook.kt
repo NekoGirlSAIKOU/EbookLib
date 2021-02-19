@@ -18,7 +18,7 @@ open class EpubBook constructor(language: String? = null, identifier: String? = 
     val spine: MutableList<EpubItem> = ArrayList()
     val toc: MutableList<Catalog> = ArrayList()
     var coverXMTHL: EpubHtml? = null
-    var language: String
+    open var language: String
         get() {
             return metas.find { meta -> meta.name == "language" }!!.value!!
         }
@@ -30,7 +30,7 @@ open class EpubBook constructor(language: String? = null, identifier: String? = 
                 meta.value = value
             }
         }
-    var identifier: String
+    open var identifier: String
         get() {
             return metas.find { meta -> meta.name == "identifier" }!!.name
         }
@@ -44,7 +44,7 @@ open class EpubBook constructor(language: String? = null, identifier: String? = 
                 meta.value = value
             }
         }
-    var title: String?
+    open var title: String?
         get() {
             return metas.find { meta -> meta.name == "title" }?.value!!
         }
@@ -186,7 +186,7 @@ open class EpubBook constructor(language: String? = null, identifier: String? = 
         return items.filter { it is EpubCss } as List<EpubCss>
     }
 
-    fun setCover(coverImageItem: EpubItem, create_page: Boolean = false) {
+    open fun setCover(coverImageItem: EpubItem, create_page: Boolean = false) {
         addItem(coverImageItem)
         val others: MutableMap<String, String> = HashMap()
         others["name"] = "cover"
@@ -199,13 +199,13 @@ open class EpubBook constructor(language: String? = null, identifier: String? = 
         }
     }
 
-    fun setCover(filePath: String?, content: ByteArray, create_page: Boolean = false) {
+    open fun setCover(filePath: String?, content: ByteArray, create_page: Boolean = false) {
         // Default file name is cover.jpg
         val coverImageItem = EpubImage("coverImage", filePath ?: "cover.jpg", null, content)
         setCover(coverImageItem, create_page)
     }
 
-    fun setCover(content: ByteArray, create_page: Boolean = false) {
+    open fun setCover(content: ByteArray, create_page: Boolean = false) {
         setCover(null, content, create_page)
     }
 
