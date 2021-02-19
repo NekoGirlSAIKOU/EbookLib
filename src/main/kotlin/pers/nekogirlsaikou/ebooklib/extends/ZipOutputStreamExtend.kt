@@ -4,7 +4,7 @@ import java.util.zip.CRC32
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
 
-internal fun ZipOutputStream.writeDeflatedFile(path:String,content:ByteArray?) {
+internal fun ZipOutputStream.writeDeflatedFile(path: String, content: ByteArray?) {
     setMethod(ZipOutputStream.DEFLATED)
     val ze = ZipEntry(path)
     putNextEntry(ze)
@@ -12,8 +12,8 @@ internal fun ZipOutputStream.writeDeflatedFile(path:String,content:ByteArray?) {
     closeEntry()
 }
 
-internal fun ZipOutputStream.writeStoredFile(path:String,content: ByteArray?) {
-    val content:ByteArray = content ?:ByteArray(0)
+internal fun ZipOutputStream.writeStoredFile(path: String, content: ByteArray?) {
+    val content: ByteArray = content ?: ByteArray(0)
     setMethod(ZipOutputStream.STORED)
     val ze = ZipEntry(path)
     val crc32 = CRC32()

@@ -1,5 +1,5 @@
 package pers.nekogirlsaikou.ebooklib.epub
 
-enum class EpubVersion{
+enum class EpubVersion {
     EPUB2, EPUB3
 }

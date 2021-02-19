@@ -25,7 +25,7 @@ open class EpubHtml constructor(
             html.attr("lang", language)
             html.attr("xml:lang", language)
 
-            when (this.book?.epubVersion ?:EpubVersion.EPUB2) {
+            when (this.book?.epubVersion ?: EpubVersion.EPUB2) {
                 EpubVersion.EPUB2 -> {
                     html.attr("xmlns", "http://www.w3.org/1999/xhtml")
                 }
@@ -51,12 +51,12 @@ open class EpubHtml constructor(
             this.html.outputSettings().escapeMode(Entities.EscapeMode.xhtml)
             this.html.outputSettings().charset("UTF-8")
             return ("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
-                    "<!DOCTYPE html>\n"+html.toString()).toByteArray()
+                    "<!DOCTYPE html>\n" + html.toString()).toByteArray()
         }
         set(value) {}
 
     init {
-        this.html = Jsoup.parse(content ?:"")
+        this.html = Jsoup.parse(content ?: "")
         this.language = language ?: "en"
         this.title = title
     }
@@ -71,8 +71,8 @@ open class EpubHtml constructor(
         return this.html.html()
     }
 
-    fun setContent(content: String?):EpubHtml {
-        this.html = Jsoup.parse(content ?:"")
+    fun setContent(content: String?): EpubHtml {
+        this.html = Jsoup.parse(content ?: "")
         return this
     }
 
@@ -92,10 +92,10 @@ open class EpubHtml constructor(
         return super.addToSpine(spine) as EpubHtml
     }
 
-    open fun addToToc(toc:MutableList<Catalog>,makeSubToc:Boolean = false):EpubHtml{
+    open fun addToToc(toc: MutableList<Catalog>, makeSubToc: Boolean = false): EpubHtml {
         Catalog(this).let {
             toc.add(it)
-            if (makeSubToc){
+            if (makeSubToc) {
                 it.sub_catalog = ArrayList()
             }
         }
