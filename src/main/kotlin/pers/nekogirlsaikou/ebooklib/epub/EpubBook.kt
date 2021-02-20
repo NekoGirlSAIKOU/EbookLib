@@ -75,7 +75,7 @@ open class EpubBook constructor(language: String? = null, identifier: String? = 
         this.metas.add(EpubMeta(null, "meta", null, map))
         this.language = language ?: "en"
         this.title = title
-        addIdentifier(identifier ?: "urn:uuid:" + UUID.randomUUID().toString())
+        // addIdentifier(identifier ?: "urn:uuid:" + UUID.randomUUID().toString())
     }
 
     constructor(ins: InputStream) : this() {
