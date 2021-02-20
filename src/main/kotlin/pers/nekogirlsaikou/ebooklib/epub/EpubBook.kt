@@ -30,20 +30,6 @@ open class EpubBook constructor(language: String? = null, identifier: String? = 
                 meta.value = value
             }
         }
-    open var identifier: String
-        get() {
-            return metas.find { meta -> meta.name == "identifier" }!!.name
-        }
-        set(value) {
-            val meta: EpubMeta? = metas.find { meta -> meta.name == "identifier" }
-            if (meta == null) {
-                val map: MutableMap<String, String> = HashMap()
-                map["id"] = "BookId"
-                metas.add(EpubMeta("dc", "identifier", value, map))
-            } else {
-                meta.value = value
-            }
-        }
     open var title: String?
         get() {
             return metas.find { meta -> meta.name == "title" }?.value!!
@@ -65,6 +51,19 @@ open class EpubBook constructor(language: String? = null, identifier: String? = 
                 metas.add(EpubMeta("dc", "title", value))
             }
         }
+    open var description:String?
+        get() {
+            return metas.find { it.namespace == "dc" && it.name =="description" }?.value!!
+        }
+        set(value) {
+            val meta = metas.find { it.namespace == "dc" && it.name =="description" }
+            if (meta == null){
+                metas.add(EpubMeta("dc","description",value))
+            } else {
+                meta.value = value
+            }
+
+        }
 
     var items: MutableList<EpubItem> = ArrayList()
 
@@ -75,8 +74,8 @@ open class EpubBook constructor(language: String? = null, identifier: String? = 
         map["content"] = "ebook-lib v$VERSION"
         this.metas.add(EpubMeta(null, "meta", null, map))
         this.language = language ?: "en"
-        this.identifier = identifier ?: "urn:uuid:" + UUID.randomUUID().toString()
         this.title = title
+        addIdentifier(identifier ?: "urn:uuid:" + UUID.randomUUID().toString())
     }
 
     constructor(ins: InputStream) : this() {
@@ -95,8 +94,8 @@ open class EpubBook constructor(language: String? = null, identifier: String? = 
         return this
     }
 
-    fun setIdentifier(identifier: String): EpubBook {
-        this.identifier = identifier
+    fun setDescription (description:String):EpubBook{
+        this.description = description
         return this
     }
 
@@ -115,6 +114,16 @@ open class EpubBook constructor(language: String? = null, identifier: String? = 
         return this
     }
 
+    fun getSubjects():List<String>{
+        val subjects:MutableList<String> = ArrayList()
+        this.metas.filter { meta ->
+            meta.namespace == "dc" && meta.name == "subject"
+        }.forEach { meta ->
+            subjects.add(meta.name)
+        }
+        return subjects
+    }
+
     fun getAuthor(): String? {
         return metas.find { it.name == "creator" }?.value!!
     }
@@ -130,6 +139,23 @@ open class EpubBook constructor(language: String? = null, identifier: String? = 
 
     fun getAuthorMetas(): List<EpubMeta> {
         return metas.filter { it.name == "creator" }
+    }
+
+    fun getIdentifiers():List<String>{
+        val identifiers:MutableList<String> = ArrayList()
+        this.metas.filter { meta ->
+            meta.name == "identifier"
+        }.forEach { meta ->
+            identifiers.add(meta.name)
+        }
+        return identifiers
+    }
+
+    fun addIdentifier(identifier: String): EpubBook {
+        val map: MutableMap<String, String> = HashMap()
+        map["id"] = "BookId"
+        metas.add(EpubMeta("dc", "identifier", identifier, map))
+        return this
     }
 
     fun addAuthor(authorName: String): EpubBook {
