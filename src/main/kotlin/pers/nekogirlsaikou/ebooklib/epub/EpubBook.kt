@@ -84,16 +84,6 @@ open class EpubBook constructor(language: String? = null, identifier: String? = 
         metas.clear()
     }
 
-    fun setTitle(title: String): EpubBook {
-        this.title = title
-        return this
-    }
-
-    fun setLanguage(language: String): EpubBook {
-        this.language = language
-        return this
-    }
-
     fun setDescription (description:String):EpubBook{
         this.description = description
         return this
