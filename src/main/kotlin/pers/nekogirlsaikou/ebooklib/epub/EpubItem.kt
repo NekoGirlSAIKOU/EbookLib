@@ -7,7 +7,7 @@ import java.util.*
 open class EpubItem constructor(uid: String?, filePath: String, mediaType: String?, content: ByteArray?) {
     var uid: String = uid ?: UUID.randomUUID().toString()
     var filePath: String = filePath
-    var mediaType: String = mediaType ?: Files.probeContentType(Paths.get(filePath))
+    var mediaType: String = mediaType ?: getMimeFromPath(filePath)
     internal open var content: ByteArray? = content
     var book: EpubBook? = null
 
@@ -31,5 +31,17 @@ open class EpubItem constructor(uid: String?, filePath: String, mediaType: Strin
     }
 
     internal open fun onOutput(epubVersion: EpubVersion) {
+    }
+
+    private fun getMimeFromPath(filePath:String):String{
+        return when (filePath.substring(filePath.lastIndexOf("."))){
+            ".xhtml"->"application/xhtml+xml"
+            ".jpg"->"image/jpeg"
+            ".jpeg"->"image/jpeg"
+            ".png"->"image/png"
+            ".gif"->"image/gif"
+            ".bmp"->"image/bmp"
+            else -> Files.probeContentType(Paths.get(filePath))
+        }
     }
 }
