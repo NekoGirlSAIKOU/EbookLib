@@ -1,3 +1,3 @@
 package pers.nekogirlsaikou.ebooklib
 
-const val VERSION = "0.2.2"
+const val VERSION = "0.2.3"
