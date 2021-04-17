@@ -6,13 +6,14 @@ class WriteEpub {
     @Test
     fun writeEpub2() {
         val book = EpubBook(title = "test epub2")
+        book.addIdentifier("123");
         book.epubVersion = EpubVersion.EPUB2
         book.addAuthor("NekoGirlSAIKOU")
         book.addSubject("epub2")
 
         book.addTestItems()
 
-        book.addItem(EpubNcx())
+        book.addItem(EpubNcxExperiment())
 
         book.write("/tmp/test epub2.epub")
     }
@@ -20,13 +21,14 @@ class WriteEpub {
     @Test
     fun writeEpub3() {
         val book = EpubBook(title = "test epub3")
+        book.addIdentifier("123");
         book.epubVersion = EpubVersion.EPUB3
         book.addAuthor("NekoGirlSAIKOU")
         book.addSubject("epub3")
 
         book.addTestItems()
 
-        book.addItem(EpubNcx())
+        book.addItem(EpubNcxExperiment())
         book.addItem(EpubNav().apply { book.spine.add(this) })
 
         book.write("/tmp/test epub3.epub")
