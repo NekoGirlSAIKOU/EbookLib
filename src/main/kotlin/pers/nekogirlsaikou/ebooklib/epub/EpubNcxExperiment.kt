@@ -31,7 +31,7 @@ class EpubNcxExperiment : EpubNcx() {
                 book!!.toc,
                 book!!.title,
                 book!!.language,
-                book!!.getIdentifiers()[0]
+                this.uid
             ).toByteArray(StandardCharsets.UTF_8)
         }
         set(value) {}
