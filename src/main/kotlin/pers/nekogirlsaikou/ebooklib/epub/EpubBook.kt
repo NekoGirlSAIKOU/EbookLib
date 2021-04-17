@@ -12,7 +12,7 @@ import kotlin.collections.HashMap
 
 open class EpubBook constructor(language: String? = null, identifier: String? = null, title: String? = null, epubVersion: EpubVersion = EpubVersion.EPUB2) {
     var epubVersion: EpubVersion = epubVersion
-    private val metas: MutableList<EpubMeta> = ArrayList()
+    protected val metas: MutableList<EpubMeta> = ArrayList()
     val spine: MutableList<EpubItem> = ArrayList()
     val toc: MutableList<Catalog> = ArrayList()
     var coverXMTHL: EpubHtml? = null
