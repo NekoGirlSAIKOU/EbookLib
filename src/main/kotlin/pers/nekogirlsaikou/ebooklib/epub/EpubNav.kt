@@ -4,7 +4,7 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 
-open class EpubNav : EpubHtml("nav", "nav.xhtml", "application/xhtml+xml") {
+open class EpubNav : EpubHtml(uid = "nav",filePath = "nav.xhtml", mediaType = "application/xhtml+xml") {
     open val toc: MutableList<Catalog>?
         get() = book?.toc
     open override var language: String

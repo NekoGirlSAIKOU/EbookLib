@@ -7,13 +7,13 @@ import org.jsoup.nodes.Entities
 import pers.nekogirlsaikou.ebooklib.extends.getRootElement
 
 open class EpubHtml constructor(
-    uid: String?,
+    uid: String?=null,
     filePath: String,
-    mediaType: String?,
-    content: String?,
-    language: String?,
-    title: String?
-) : EpubItem(uid, filePath, mediaType) {
+    mediaType: String?=null,
+    content: String?=null,
+    language: String?=null,
+    title: String?=null
+) : EpubItem(uid=uid, filePath=filePath, mediaType=mediaType) {
     open lateinit var html: Document
     open var language: String = "en"
     open var title: String? = null
@@ -53,19 +53,15 @@ open class EpubHtml constructor(
             return ("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
                     "<!DOCTYPE html>\n" + html.toString()).toByteArray()
         }
-        set(value) {}
+        set(value) {
+            this.html = Jsoup.parse(value?.decodeToString() ?:"")
+        }
 
     init {
         this.html = Jsoup.parse(content ?: "")
         this.language = language ?: "en"
         this.title = title
     }
-
-    constructor(uid: String?, filePath: String, mediaType: String?) : this(uid, filePath, mediaType, null, null, null)
-
-    constructor(uid: String?, filePath: String) : this(uid, filePath, null)
-
-    constructor(filePath: String) : this(null, filePath, null)
 
     open fun getContent(): String {
         return this.html.html()
@@ -87,19 +83,5 @@ open class EpubHtml constructor(
 
     fun getLinkedCSS(): List<EpubItem> {
         return this.linkedCSS
-    }
-
-    open override fun addToSpine(spine: MutableList<EpubItem>): EpubHtml {
-        return super.addToSpine(spine) as EpubHtml
-    }
-
-    open fun addToToc(toc: MutableList<Catalog>, makeSubToc: Boolean = false): EpubHtml {
-        Catalog(this).let {
-            toc.add(it)
-            if (makeSubToc) {
-                it.sub_catalog = ArrayList()
-            }
-        }
-        return this
     }
 }

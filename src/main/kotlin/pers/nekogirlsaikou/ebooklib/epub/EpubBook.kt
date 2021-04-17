@@ -12,60 +12,47 @@ import java.util.zip.ZipOutputStream
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
-open class EpubBook constructor(language: String? = null, identifier: String? = null, title: String? = null) {
-    var epubVersion: EpubVersion = EpubVersion.EPUB2
-    val metas: MutableList<EpubMeta> = ArrayList()
+open class EpubBook constructor(language: String? = null, identifier: String? = null, title: String? = null, epubVersion: EpubVersion = EpubVersion.EPUB2) {
+    var epubVersion: EpubVersion = epubVersion
+    private val metas: MutableList<EpubMeta> = ArrayList()
     val spine: MutableList<EpubItem> = ArrayList()
     val toc: MutableList<Catalog> = ArrayList()
     var coverXMTHL: EpubHtml? = null
-    open var language: String
+    open var language: String?
         get() {
-            return metas.find { meta -> meta.name == "language" }!!.value!!
+            return getMetadata("dc","language")?.value!!
         }
         set(value) {
-            val meta: EpubMeta? = metas.find { meta -> meta.name == "language" }
-            if (meta == null) {
-                metas.add(EpubMeta("dc", "language", value))
+            if (value == null){
+                removeMetadata("dc", "language")
             } else {
-                meta.value = value
+                setUniqueMetadata("dc", "language", value)
             }
         }
     open var title: String?
         get() {
-            return metas.find { meta -> meta.name == "title" }?.value!!
+            return getMetadata("dc", "title")?.value!!
         }
         set(value) {
-            metas.forEach { meta ->
-                if (meta.name == "title") {
-                    if (value == null) {
-                        metas.remove(meta)
-                    } else {
-                        meta.value = value
-                    }
-                    return
-                }
-            }
-            if (value == null) {
-                return
+            if (value == null){
+                removeMetadata("dc", "title")
             } else {
-                metas.add(EpubMeta("dc", "title", value))
+                setUniqueMetadata("dc", "title", value)
             }
         }
     open var description:String?
         get() {
-            return metas.find { it.namespace == "dc" && it.name =="description" }?.value!!
+            return getMetadata("dc", "description")?.value!!
         }
         set(value) {
-            val meta = metas.find { it.namespace == "dc" && it.name =="description" }
-            if (meta == null){
-                metas.add(EpubMeta("dc","description",value))
+            if (value == null){
+                removeMetadata("dc","description")
             } else {
-                meta.value = value
+                setUniqueMetadata("dc","description",value)
             }
-
         }
 
-    var items: MutableList<EpubItem> = ArrayList()
+    private var items: MutableList<EpubItem> = ArrayList()
 
 
     init {
@@ -84,24 +71,34 @@ open class EpubBook constructor(language: String? = null, identifier: String? = 
         metas.clear()
     }
 
-    fun setDescription (description:String):EpubBook{
-        this.description = description
-        return this
-    }
-
-    fun addMetadata(namespace: String?, name: String, value: String?, others: MutableMap<String, String>?): EpubBook {
+    fun addMetadata(namespace: String?=null, name: String, value: String?=null, others: MutableMap<String, String>?=null) {
         metas.add(EpubMeta(namespace, name, value, others))
-        return this
     }
 
-    fun addMetadata(namespace: String?, name: String, value: String?): EpubBook {
-        metas.add(EpubMeta(namespace, name, value))
-        return this
+    fun setUniqueMetadata(namespace: String?=null, name: String, value: String?=null, others: MutableMap<String, String>?=null){
+        val meta = getMetadata(namespace,name)
+        if (meta == null){
+            addMetadata(namespace,name,value,others)
+        } else {
+            meta.value = value
+            meta.others = others
+        }
     }
 
-    fun addSubject(content: String): EpubBook {
+    fun removeMetadata(namespace: String?=null, name: String){
+        metas.removeIf { it.namespace == namespace && it.name == name }
+    }
+
+    fun getMetadata(namespace: String?=null, name: String):EpubMeta? {
+        return metas.find { it.namespace == namespace && it.name == name }
+    }
+
+    fun getMetadatas(namespace: String?=null, name: String):List<EpubMeta>{
+        return metas.filter { it.namespace == namespace && it.name == name }
+    }
+
+    fun addSubject(content: String) {
         addMetadata("dc", "subject", content)
-        return this
     }
 
     fun getSubjects():List<String>{
@@ -115,12 +112,12 @@ open class EpubBook constructor(language: String? = null, identifier: String? = 
     }
 
     fun getAuthor(): String? {
-        return metas.find { it.name == "creator" }?.value!!
+        return getMetadata("dc","creator")?.value!!
     }
 
     fun getAuthors(): List<String> {
         val authors: MutableList<String> = ArrayList()
-        metas.filter { meta -> meta.name == "creator" }
+        metas.filter { meta ->meta.namespace == "dc" && meta.name == "creator" }
             .forEach { meta ->
                 authors.add(meta.name)
             }
@@ -128,43 +125,47 @@ open class EpubBook constructor(language: String? = null, identifier: String? = 
     }
 
     fun getAuthorMetas(): List<EpubMeta> {
-        return metas.filter { it.name == "creator" }
+        return metas.filter { it.namespace == "dc" && it.name == "creator" }
     }
 
     fun getIdentifiers():List<String>{
         val identifiers:MutableList<String> = ArrayList()
         this.metas.filter { meta ->
-            meta.name == "identifier"
+            meta.namespace == "dc" && meta.name == "identifier"
         }.forEach { meta ->
             identifiers.add(meta.name)
         }
         return identifiers
     }
 
-    fun addIdentifier(identifier: String): EpubBook {
-        val map: MutableMap<String, String> = HashMap()
-        map["id"] = "BookId"
-        metas.add(EpubMeta("dc", "identifier", identifier, map))
-        return this
+    fun addIdentifier(identifier: String) {
+        addMetadata("dc", "identifier", identifier,mutableMapOf<String,String>("id" to "BookId"))
     }
 
-    fun addAuthor(authorName: String): EpubBook {
-        val others: MutableMap<String, String> = HashMap()
-        others["opf:role"] = "aut"
-        addMetadata("dc", "creator", authorName, others)
-        return this
+    fun addAuthor(authorName: String) {
+        addMetadata("dc", "creator", authorName, mutableMapOf<String,String>("opf:role" to "aut"))
     }
 
-    fun addIllustrator(illustratorName: String): EpubBook {
-        var others: MutableMap<String, String> = HashMap()
-        others["id"] = "illustrator"
-        addMetadata("dc", "contributor", illustratorName, others)
-        others = HashMap()
-        others["property"] = "role"
-        others["refines"] = "#illustrator"
-        others["scheme"] = "marc:relators"
-        addMetadata(null, "meta", "ill", others)
-        return this
+    fun addIllustrator(illustratorName: String,id:String?=null) {
+        val illustratorId = if (id == null){
+            val count = metas.count {
+                it.namespace == null
+                        && it.name == "meta"
+                        && it.others?.get("property") == "role"
+                        && it.others?.get("scheme") == "marc:relators"
+                        && it.others?.get("refines")?.contains("#illustrator") ?: false
+            }
+            "illustrator${count + 1}"
+        } else {
+            id
+        }
+
+        addMetadata("dc", "contributor", illustratorName, mutableMapOf("id" to "illustrator"))
+        addMetadata(null, "meta", "ill", mutableMapOf(
+            "property" to "role",
+            "refines" to  "#${illustratorId}",
+            "scheme" to  "marc:relators"
+        ))
     }
 
     fun addItem(item: EpubItem): EpubItem {
@@ -176,8 +177,8 @@ open class EpubBook constructor(language: String? = null, identifier: String? = 
         return item
     }
 
-    fun addItem(uid: String? = null, filePath: String, mediaType: String? = null): EpubItem {
-        return addItem(EpubItem(uid, filePath, mediaType))
+    fun addItem(uid: String? = null, filePath: String, mediaType: String? = null,content:ByteArray? = null): EpubItem {
+        return addItem(EpubItem(uid = uid, filePath = filePath, mediaType = mediaType,content = content))
     }
 
     fun addEpubHtml(uid: String? = null, filePath: String, title: String? = null, language: String? = null): EpubHtml {
@@ -194,11 +195,19 @@ open class EpubBook constructor(language: String? = null, identifier: String? = 
     }
 
     fun addEpubCss(uid: String? = null, filePath: String, content: String? = null): EpubCss {
-        return addItem(EpubCss(uid, filePath, content)) as EpubCss
+        return addItem(EpubCss(uid = uid,filePath = filePath,content = content)) as EpubCss
     }
 
     fun removeItem(item: EpubItem) {
         items.remove(item)
+    }
+
+    fun findItem(predicate: (EpubItem) -> Boolean):EpubItem?{
+        return items.find(predicate)
+    }
+
+    fun findItems(predicate: (EpubItem) -> Boolean):List<EpubItem>{
+        return items.filter(predicate)
     }
 
     fun findItemByFilePath(filePath: String): EpubItem? {
@@ -230,20 +239,16 @@ open class EpubBook constructor(language: String? = null, identifier: String? = 
         addMetadata(null, "meta", null, others)
         if (create_page) {
             // TODO: 2/11/21 Add create cover page support
-            coverXMTHL = EpubHtml("coverPage", "coverPage.xhtml")
+            //coverXMTHL = EpubHtml("coverPage", "coverPage.xhtml")
 
         }
         return this
     }
 
-    open fun setCover(filePath: String?, content: ByteArray, create_page: Boolean = false): EpubBook {
+    open fun setCover(content: ByteArray,filePath: String?=null,create_page: Boolean = false): EpubBook {
         // Default file name is cover.jpg
-        val coverImageItem = EpubImage("coverImage", filePath ?: "cover.jpg", null, content)
+        val coverImageItem = EpubImage("coverImage", filePath ?: "cover.jpg", content = content)
         return setCover(coverImageItem, create_page)
-    }
-
-    open fun setCover(content: ByteArray, create_page: Boolean = false): EpubBook {
-        return setCover(null, content, create_page)
     }
 
     private fun generateContainerXML(): String {

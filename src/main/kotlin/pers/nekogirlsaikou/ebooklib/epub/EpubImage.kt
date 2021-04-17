@@ -1,7 +1,7 @@
 package pers.nekogirlsaikou.ebooklib.epub
 
-open class EpubImage constructor(uid: String?, filePath: String, mediaType: String?, content: ByteArray?) :
-    EpubItem(uid, filePath, mediaType, content) {
+open class EpubImage constructor(uid: String?=null, filePath: String, mediaType: String?=null, content: ByteArray?=null) :
+    EpubItem(uid=uid, filePath=filePath, mediaType=mediaType, content=content) {
     public open override var content: ByteArray?
         get() = super.content
         set(value) {

@@ -3,7 +3,7 @@ package pers.nekogirlsaikou.ebooklib.epub
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 
-open class EpubNcx : EpubItem("ncx", "toc.ncx", "application/x-dtbncx+xml") {
+open class EpubNcx : EpubItem(uid = "ncx", filePath = "toc.ncx", mediaType = "application/x-dtbncx+xml") {
     open val toc: MutableList<Catalog>?
         get() = book?.toc
     open override var content: ByteArray?
